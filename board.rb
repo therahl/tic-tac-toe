@@ -19,7 +19,7 @@ class Board
   end
 
   def game_over?
-    winning_move || @turns == 9
+    winning_move || @turns == 8
   end
 
   def winning_move
@@ -33,7 +33,7 @@ class Board
       counter = 0
       0..2.each do |y|
         break if @board[x][y].nil?
-        break unless @board[x][y] == mark
+        return false unless @board[x][y] == mark
         counter += 1
         return true if counter == 2
       end
