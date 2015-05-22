@@ -2,7 +2,7 @@ class Board
 
   attr_reader :board
 
-  def intitalize
+  def initialize
     @board = [
       [nil, nil, nil],
       [nil, nil, nil],
@@ -12,58 +12,47 @@ class Board
   end
 
   def make_turn(x, y, player)
-    unless get_mark(x,y)
+    if get_mark(x,y)
+      return false
+    else
       set_mark(x, y, player.mark)
       @turns += 1
     end
   end
 
   def game_over?
-    winning_move || @turns == 9
+    @turns == 9
   end
 
-  def winning_move
-    horizon_win || vertical_win || diagonal_win
+  def winning_move(player)
+    horizontal_win(player.mark) || vertical_win(player.mark) || diagonal_win(player.mark)
   end
 
   private
 
   def horizontal_win(mark)
-    0..2.each do |x|
-      counter = 0
-      0..2.each do |y|
-        break if @board[x][y].nil?
-        break unless @board[x][y] == mark
-        counter += 1
-        return true if counter == 2
-      end
+    @board.detect do |row|
+      row.uniq == [mark]
     end
-    return true
   end
 
   def vertical_win(mark)
-    x = 0
-    0..2.each do |num|
-      if @board[x][y].nil?
-        x = 0
-        next
-      end
-      return false unless @board[x][y] == mark
-      x = y + 1
-      return true if x == 2
+    (0..2).detect do |i|
+      @board.map {|row| row[i]}.uniq == [mark]
     end
-    return true
   end
 
-  def diagonal_win
+  def diagonal_win(mark)
+    [@board[0][0], @board[1][1], @board[2][2]].uniq == [mark] ||
+    [@board[0][2], @board[1][1], @board[2][0]].uniq == [mark]
   end
 
   def set_mark(x, y, mark)
-    @board[x][y] = mark
+    @board[y][x] = mark
   end
 
   def get_mark(x, y)
-    @board[x][y]
+    @board[y][x]
   end
 
 end
